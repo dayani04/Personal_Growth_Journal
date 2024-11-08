@@ -1,0 +1,315 @@
+body {
+    font-family: 'Times New Roman';
+    margin: 0;
+    padding: 0;
+    align-items: center;
+    justify-content: center;
+}
+
+header {
+    background-color: #C9D2F2;
+    color: #7B97D3;
+    padding: 20px;
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+}
+
+nav {
+    display: flex;
+    gap: 10px; /* Spacing between buttons */
+}
+
+main {
+    padding: 20px;
+}
+
+/* Hero Section */
+.hero {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 40px; /* Space below hero section */
+}
+
+.hero img {
+    width: 300px; /* Adjust image width as needed */
+    margin-right: 20px; /* Space between image and text */
+    border-radius: 15px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.hero-text {
+    padding: 20px;
+    font-family:'Times New Roman';
+    font-size: 18px;
+}
+
+/* Features Section */
+.features {
+    margin-bottom: 40px; /* Space below features section */
+}
+
+.features h2 {
+    text-align: center;
+}
+
+.feature-content {
+    display: flex;
+    justify-content: space-around; /* Space between features */
+    flex-wrap: wrap; /* Wrap to next line on smaller screens */
+}
+
+.feature {
+    text-align: center; /* Center text */
+    max-width: 200px; /* Optional: limit feature width */
+}
+
+.feature img {
+    width: 200px; /* Adjust feature image size */
+    height: 200px;
+    border-radius: 10px;
+    margin-bottom: 10px; /* Space below images */
+}
+
+/* Testimonials Section */
+.testimonials {
+    margin-bottom: 40px; /* Space below testimonials section */
+}
+
+.testimonials h2 {
+    text-align: center;
+}
+
+.testimonial-content {
+    display: flex;
+    justify-content: space-around; /* Space between testimonials */
+    flex-wrap: wrap; /* Wrap to next line on smaller screens */
+}
+
+.testimonial {
+    max-width: 250px; /* Optional: limit testimonial width */
+    text-align: center; /* Center text */
+    margin: 10px; /* Space around testimonials */
+    padding: 20px;
+    border: 1px solid #C9D2F2; /* Border for visual separation */
+    border-radius: 10px;
+    background-color: #f9f9f9; /* Light background for testimonials */
+}
+
+/* Footer */
+footer {
+    text-align: center;
+    padding: 10px;
+    background-color: #C9D2F2;
+    position: relative;
+    bottom: 0;
+    width: 100%;
+}
+
+/* Button */
+button {
+    padding: 12px 20px;
+    background-color: #0077b6;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    font-size: 16px;
+    cursor: pointer;
+    width: 100%;
+    margin-top: 10px;
+}
+
+button:hover {
+    background-color: #03045e;
+}
+
+/* Register Container */
+.register-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    height: 100%;
+}
+
+.register-card {
+    background-color: #ffff;
+    padding: 30px;
+    border-radius: 12px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    max-width: 400px;
+    width: 100%;
+    text-align: center;
+}
+
+.register-card h2 {
+    margin-bottom: 20px;
+    color: #4CAF50;
+}
+
+.register-form .form-group {
+    margin-bottom: 15px;
+}
+
+.register-form label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: bold;
+    color: #333;
+}
+
+.register-form input {
+    padding: 10px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+    width: 100%;
+    box-sizing: border-box;
+    font-size: 16px;
+}
+
+.register-form input:focus {
+    border-color: #4CAF50;
+    outline: none;
+}
+
+.register-card p {
+    margin-top: 20px;
+    color: #333;
+}
+
+.register-card p a {
+    color: #4CAF50;
+    text-decoration: none;
+}
+
+.register-card p a:hover {
+    text-decoration: underline;
+}
+
+/* Login Container */
+.login-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    background-color:node ;
+}
+
+/* Login Card */
+.login-card {
+    background-color: #fff;
+    padding: 30px;
+    border-radius: 12px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    max-width: 400px;
+    width: 100%;
+    text-align: center;
+}
+
+.login-card h2 {
+    margin-bottom: 20px;
+    color: #0077b6;
+}
+
+.login-form .form-group {
+    margin-bottom: 15px;
+}
+
+.login-form label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: bold;
+    color: #333;
+}
+
+.login-form input {
+    padding: 10px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+    width: 100%;
+    box-sizing: border-box;
+    font-size: 16px;
+}
+
+.login-form input:focus {
+    border-color: #0077b6;
+    outline: none;
+}
+
+.login-card p {
+    margin-top: 20px;
+    color: #333;
+}
+
+.login-card p a {
+    color: #0077b6;
+    text-decoration: none;
+}
+
+.login-card p a:hover {
+    text-decoration: underline;
+}
+/* Verification Container */
+.verification-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    height: 100%;
+}
+
+.verification-card {
+    background-color: #fff;
+    padding: 30px;
+    border-radius: 12px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    max-width: 400px;
+    width: 100%;
+    text-align: center;
+}
+
+.verification-card h2 {
+    margin-bottom: 20px;
+    color: #4CAF50;
+}
+
+.verification-form .form-group {
+    margin-bottom: 15px;
+}
+
+.verification-form label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: bold;
+    color: #333;
+}
+
+.verification-form input {
+    padding: 10px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+    width: 100%;
+    box-sizing: border-box;
+    font-size: 16px;
+}
+
+.verification-form input:focus {
+    border-color: #4CAF50;
+    outline: none;
+}
+
+.verification-card p {
+    margin-top: 20px;
+    color: #333;
+}
+
+.verification-card p a {
+    color: #4CAF50;
+    text-decoration: none;
+}
+
+.verification-card p a:hover {
+    text-decoration: underline;
+}
+
