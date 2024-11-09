@@ -16,7 +16,6 @@ const transporter = nodemailer.createTransport({
     },
 });
 
-
 router.get('/', (req, res) => {
     const htmlContent = `
     <!DOCTYPE html>
@@ -83,10 +82,8 @@ router.get('/', (req, res) => {
     res.send(htmlContent);
 });
 
-
 router.post('/', async (req, res) => {
     const { name, email, password } = req.body;
-
 
     const strongPasswordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
 
@@ -100,16 +97,13 @@ router.post('/', async (req, res) => {
     const db = getDb();
 
     try {
-
         const existingUser = await db.collection('users').findOne({ email });
         if (existingUser) {
             return res.send('This email is already registered. Please use a different email.');
         }
 
         const salt = await bcrypt.genSalt(saltRounds);
-
         const hashedPassword = await bcrypt.hash(password, salt);
-
 
         const result = await db.collection('users').insertOne({
             email,
@@ -121,14 +115,12 @@ router.post('/', async (req, res) => {
             verificationToken: "",
         });
 
-
         const verificationToken = result.insertedId.toString();
 
         await db.collection('users').updateOne(
             { _id: result.insertedId },
             { $set: { verificationToken } }
         );
-
 
         const mailOptions = {
             from: 'dayanisandamali977@gmail.com',
@@ -137,12 +129,12 @@ router.post('/', async (req, res) => {
             html: `
                 <h1>Verify Your Email</h1>
                 <p>Thank you for registering! Please click the button below to verify your email address and complete your registration.</p>
-                <a href="http://localhost:3000/verify-email?token=${verificationToken}"
-                   style="display:inline-block; padding: 10px 20px; color: white; background-color: #28a745; text-decoration: none; border-radius: 5px;">
-                   Verify Email
+                <a href="https://personal-growth-journal.alexlanka.com/login?token=${verificationToken}"
+                style="display:inline-block; padding: 10px 20px; color: white; background-color: #28a745; text-decoration: none; border-radius: 5px;">
+                Verify Email
                 </a>
                 <p>If the button above doesn't work, please copy and paste this link into your browser:</p>
-                <p>http://localhost:3000/verify-email?token=${verificationToken}</p>
+                <p>https://personal-growth-journal.alexlanka.com/login?token=${verificationToken}</p>
             `,
         };
 

@@ -17,7 +17,6 @@ router.get('/', (req, res) => {
                 <nav>
                     <button onclick="window.location.href='/register'">Register</button>
                     <button onclick="window.location.href='/login'">Login</button>
-                    <button onclick="window.location.href='/admin_register'">Admin</button>
                 </nav>
             </header>
             <main>
