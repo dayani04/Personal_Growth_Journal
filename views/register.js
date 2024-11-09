@@ -105,7 +105,8 @@ router.post('/', async (req, res) => {
         const salt = await bcrypt.genSalt(saltRounds);
         const hashedPassword = await bcrypt.hash(password, salt);
 
-        const result = await db.collection('users').insertOne({
+        // Instead of inserting user data directly, insert it into a temporary collection
+        const result = await db.collection('pendingUsers').insertOne({
             email,
             password: hashedPassword,
             salt,
@@ -117,7 +118,7 @@ router.post('/', async (req, res) => {
 
         const verificationToken = result.insertedId.toString();
 
-        await db.collection('users').updateOne(
+        await db.collection('pendingUsers').updateOne(
             { _id: result.insertedId },
             { $set: { verificationToken } }
         );
@@ -129,19 +130,17 @@ router.post('/', async (req, res) => {
             html: `
                 <h1>Verify Your Email</h1>
                 <p>Thank you for registering! Please click the button below to verify your email address and complete your registration.</p>
-                <a href="https://personal-growth-journal.alexlanka.com/login?token=${verificationToken}"
+                <a href="https://personal-growth-journal.alexlanka.com/verify-email?token=${verificationToken}"
                 style="display:inline-block; padding: 10px 20px; color: white; background-color: #28a745; text-decoration: none; border-radius: 5px;">
                 Verify Email
                 </a>
                 <p>If the button above doesn't work, please copy and paste this link into your browser:</p>
-                <p>https://personal-growth-journal.alexlanka.com/login?token=${verificationToken}</p>
+                <p>https://personal-growth-journal.alexlanka.com/verify-email?token=${verificationToken}</p>
             `,
         };
 
         await transporter.sendMail(mailOptions);
         console.log('Verification email sent to:', email);
-
-        const data_url = await qrcode.toDataURL(secret.otpauth_url);
 
         const htmlContent = `
             <!DOCTYPE html>
@@ -173,5 +172,4 @@ router.post('/', async (req, res) => {
         res.send('Error saving the user.');
     }
 });
-
 module.exports = router;
