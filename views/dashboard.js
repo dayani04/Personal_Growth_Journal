@@ -3,6 +3,13 @@ const router = express.Router();
 const { getDb } = require('../db');
 
 router.get('/', async (req, res) => {
+
+        if (req.session.user) {
+            // Render the dashboard page with user data
+            res.render('dashboard', { user: req.session.user });
+        } else {
+            res.redirect('/login');  // Redirect if user is not logged in
+        }
     const db = getDb();
     let categoriesList = '';
 
