@@ -4,12 +4,28 @@ const { connectToMongoDB } = require('./db'); // MongoDB connection function
 const path = require('path');
 const app = express();
 
+// Middleware to parse JSON and URL-encoded data
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+
  
 app.use(session({
     secret: 'your_secret_key',
     resave: false,
     saveUninitialized: true
 }));
+
+// Serve static files
+app.use(express.static(path.join(__dirname, 'public')));
+app.use('/images', express.static(path.join(__dirname, 'images')));
+
+// Authentication check middleware
+function isAuthenticated(req, res, next) {
+    if (req.session && req.session.user) {
+        return next(); // Proceed if the user is authenticated
+    }
+    res.redirect('/login'); // Redirect to login if not authenticated
+}
 
 // Import route files
 const indexRoute = require('./views/index');
