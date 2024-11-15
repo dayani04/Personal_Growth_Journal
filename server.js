@@ -21,13 +21,17 @@ const journalEntryRoute = require('./views/journalEntry');
 const goalsManagementRoute = require('./views/goalsManagement');
 const profileRoute = require('./views/profile');
 const admin_registerRoute = require('./views/admin_register');
-const admin_dashboardRoute = require('./views/admin_dashboard');
 const changeEmailRoute = require('./views/changeEmail');
 const changePasswordRoute = require('./views/changePassword');
 const forgetPasswordRoute = require('./views/forgetPassword');
 const logoutRoute = require('./views/logout');
 const logsRoute = require('./views/logs');
 const verifyEmailRoute = require('./views/verifyEmail');
+const admin_dashboardRoute = require('./views/admin_dashboard');
+const admin_profileRoute = require('./views/admin_profile');
+const admin_changePasswordRoute = require('./views/admin_changePassword');
+const admin_changeEmailRoute = require('./views/admin_changeEmail');
+
 
 
 
@@ -49,13 +53,16 @@ app.use('/journalEntry', journalEntryRoute);
 app.use('/goalsManagement', goalsManagementRoute);
 app.use('/profile', profileRoute);
 app.use('/admin_register', admin_registerRoute);
-app.use('/admin_dashboard', admin_dashboardRoute);
 app.use('/changeEmail', changeEmailRoute);
 app.use('/changePassword', changePasswordRoute);
 app.use('/forgetPassword', forgetPasswordRoute);
 app.use('/logout', logoutRoute);
 app.use('/logs', logsRoute);
 app.use('/verify-email', verifyEmailRoute);
+app.use('/admin_dashboard', admin_dashboardRoute);
+app.use('/admin_profile', admin_profileRoute);
+app.use('/admin_changePassword', admin_changePasswordRoute);
+app.use('/admin_changeEmail', admin_changeEmailRoute);
 
 
 

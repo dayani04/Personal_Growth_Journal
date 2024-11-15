@@ -121,12 +121,12 @@ router.post('/', async (req, res) => {
             html: `
                 <h1>Verify Your Email</h1>
                 <p>Thank you for registering! Please click the button below to verify your email address and complete your registration.</p>
-                <a href="https://personal-growth-journal.alexlanka.com/verify-email?token=${verificationToken}"
+                <a href="http://localhost:3000/verify-email?token=${verificationToken}"
                 style="display:inline-block; padding: 10px 20px; color: white; background-color: #28a745; text-decoration: none; border-radius: 5px;">
                 Verify Email
                 </a>
                 <p>If the button above doesn't work, please copy and paste this link into your browser:</p>
-                <p>https://personal-growth-journal.alexlanka.com/verify-email?token=${verificationToken}</p>
+                <p>http://localhost:3000/verify-email?token=${verificationToken}</p>
             `,
         };
 
