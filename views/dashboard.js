@@ -3,40 +3,33 @@ const router = express.Router();
 const { getDb } = require('../db');
 
 router.get('/', async (req, res) => {
+    if (req.session.user) {
+        // Render the dashboard page with user data
+        const db = getDb();
+        let categoriesList = '';
+        try {
+            const categoriesCollection = db.collection('categories');
+            const categories = await categoriesCollection.find({}).toArray();
 
-        if (req.session.user) {
-            // Render the dashboard page with user data
-            res.render('dashboard', { user: req.session.user });
-        } else {
-            res.redirect('/login');  // Redirect if user is not logged in
+            categoriesList = categories.map(category => `
+                <div class="category-card">
+                    <h3>${category.name}</h3>
+                    <button class="view-category">View</button>
+                </div>
+            `).join('');
+        } catch (err) {
+            console.error('Error fetching categories:', err);
         }
-    const db = getDb();
-    let categoriesList = '';
 
-    try {
-        const categoriesCollection = db.collection('categories');
-        const categories = await categoriesCollection.find({}).toArray();
-
-
-        categoriesList = categories.map(category => `
-            <div class="category-card">
-                <h3>${category.name}</h3>
-                <button class="view-category">View</button>
-            </div>
-        `).join('');
-    } catch (err) {
-        console.error('Error fetching categories:', err);
-    }
-
-    const htmlContent = `
-    <!DOCTYPE html>
-    <html lang="en">
-    <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>User Dashboard - My Node.js App</title>
-        <style>
-            body {
+        const htmlContent = `
+        <!DOCTYPE html>
+        <html lang="en">
+        <head>
+            <meta charset="UTF-8">
+            <meta name="viewport" content="width=device-width, initial-scale=1.0">
+            <title>User Dashboard - My Node.js App</title>
+            <style>
+                 body {
                 font-family: 'Arial', sans-serif;
                 background-color: #f1f5f9;
                 margin: 0;
@@ -116,36 +109,39 @@ router.get('/', async (req, res) => {
                 position: relative;
                 width: 100%;
             }
-        </style>
-    </head>
-    <body>
-        <header>
-            <h1>Welcome to Your Dashboard</h1>
-        </header>
-        <nav>
-            <button onclick="window.location.href='/profile'">Profile</button>
-            <button onclick="window.location.href='/logs'">Activity</button>
-            <button onclick="window.location.href='/logout'">Logout</button>
-            <button onclick="window.location.href='/'">Home</button>
-        </nav>
-        <main>
-            <p>You are logged in!</p>
-            <h2>Categories</h2>
-            <div class="category-grid">
-                ${categoriesList}
-            </div>
-            <div>
-                <button onclick="window.location.href='/journalEntry'">Journal Entry</button>
-                <button onclick="window.location.href='/goalsManagement'">Goals Management</button>
-            </div>
-        </main>
-        <footer>
-            <p>&copy; 2024 Grow Your Journey</p>
-        </footer>
-    </body>
-    </html>
-    `;
-    res.send(htmlContent);
+            </style>
+        </head>
+        <body>
+            <header>
+                <h1>Welcome to Your Dashboard</h1>
+            </header>
+            <nav>
+                <button onclick="window.location.href='/profile'">Profile</button>
+                <button onclick="window.location.href='/logs'">Activity</button>
+                <button onclick="window.location.href='/logout'">Logout</button>
+                <button onclick="window.location.href='/'">Home</button>
+            </nav>
+            <main>
+                <p>You are logged in!</p>
+                <h2>Categories</h2>
+                <div class="category-grid">
+                    ${categoriesList}
+                </div>
+                <div>
+                    <button onclick="window.location.href='/journalEntry'">Journal Entry</button>
+                    <button onclick="window.location.href='/goalsManagement'">Goals Management</button>
+                </div>
+            </main>
+            <footer>
+                <p>&copy; 2024 Grow Your Journey</p>
+            </footer>
+        </body>
+        </html>
+        `;
+        res.send(htmlContent);
+    } else {
+        res.redirect('/login');  // Redirect if user is not logged in
+    }
 });
 
 module.exports = router;

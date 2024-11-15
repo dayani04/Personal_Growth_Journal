@@ -1,16 +1,14 @@
 const express = require('express');
-const bcrypt = require('bcrypt');
 const router = express.Router();
+const bcrypt = require('bcrypt');
 const { getDb } = require('../db');
 const { v4: uuidv4 } = require('uuid');
 const useragent = require('useragent');
-
 
 router.get('/', (req, res) => {
     const lockedOutUntil = req.session.lockedOutUntil || 0;
     const currentTime = Date.now();
     const isLockedOut = currentTime < lockedOutUntil;
-
     const remainingTime = isLockedOut ? Math.ceil((lockedOutUntil - currentTime) / 1000) : 0;
 
     const htmlContent = `
@@ -22,7 +20,6 @@ router.get('/', (req, res) => {
         <title>Login - My Node.js App</title>
         <link rel="stylesheet" href="/style.css">
         <script>
-            // JavaScript for countdown timer
             window.onload = function() {
                 var remainingTime = ${remainingTime};
                 var countdownElement = document.getElementById('countdown');
@@ -32,13 +29,11 @@ router.get('/', (req, res) => {
                 var userTypeSelect = document.getElementById('userType');
 
                 if (remainingTime > 0) {
-                    // Disable form inputs and button
                     submitButton.disabled = true;
                     emailInput.disabled = true;
                     passwordInput.disabled = true;
                     userTypeSelect.disabled = true;
 
-                    // Start countdown
                     var interval = setInterval(function() {
                         countdownElement.textContent = remainingTime + ' seconds remaining';
                         remainingTime--;
@@ -46,7 +41,6 @@ router.get('/', (req, res) => {
                         if (remainingTime <= 0) {
                             clearInterval(interval);
                             countdownElement.textContent = '';
-                            // Enable form inputs and button
                             submitButton.disabled = false;
                             emailInput.disabled = false;
                             passwordInput.disabled = false;
@@ -100,25 +94,21 @@ router.get('/', (req, res) => {
     res.send(htmlContent);
 });
 
-
 router.post('/', async (req, res) => {
     const { email, password, userType } = req.body;
     const db = getDb();
-
 
     if (!req.session.attempts) {
         req.session.attempts = 0;
     }
 
     const currentTime = Date.now();
-
     if (req.session.lockedOutUntil && currentTime < req.session.lockedOutUntil) {
         req.session.errorMessage = `Too many failed login attempts. Please try again later.`;
         return res.redirect('/login');
     }
 
     try {
-
         let collectionName;
         if (userType === 'admin') {
             collectionName = 'admins';
@@ -129,24 +119,16 @@ router.post('/', async (req, res) => {
             return res.redirect('/login');
         }
 
-
         const user = await db.collection(collectionName).findOne({ email: email });
 
         if (user) {
-
             const match = await bcrypt.compare(password, user.password);
-
             if (match) {
-
                 req.session.attempts = 0;
-
-
                 const agent = useragent.parse(req.headers['user-agent']);
                 const deviceDetails = `${agent.family} on ${agent.os.family} (${agent.device.family})`;
                 const sessionCode = uuidv4();
                 const loginTime = new Date();
-
-                console.log(`User ${user._id} logging in. Session code: ${sessionCode}, Device: ${deviceDetails}, Time: ${loginTime}`);
 
                 await db.collection('logs').insertOne({
                     userId: user._id,
@@ -155,13 +137,11 @@ router.post('/', async (req, res) => {
                     sessionCode: sessionCode
                 });
 
-
                 req.session.user = {
                     id: user._id,
                     email: user.email,
                     sessionCode: sessionCode
                 };
-
 
                 if (userType === 'admin') {
                     res.redirect('/admin_dashboard');
@@ -169,10 +149,7 @@ router.post('/', async (req, res) => {
                     res.redirect('/dashboard');
                 }
             } else {
-
                 req.session.attempts++;
-
-
                 if (req.session.attempts >= 3) {
                     req.session.lockedOut = true;
                     req.session.lockedOutUntil = currentTime + 30 * 1000;
@@ -180,7 +157,6 @@ router.post('/', async (req, res) => {
                 } else {
                     req.session.errorMessage = `Invalid email or password. You have ${3 - req.session.attempts} attempts remaining.`;
                 }
-
                 res.redirect('/login');
             }
         } else {
