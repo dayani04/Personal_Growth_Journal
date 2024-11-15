@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const { getDb } = require('../db');
-const authMiddleware = require('../middlewares/authMiddleware'); // Import the authMiddleware
+const authMiddleware = require('./middlewares/authMiddleware'); // Import the authMiddleware
 
 // Protect the dashboard route, only logged-in users can access
 router.get('/', authMiddleware, async (req, res) => {
