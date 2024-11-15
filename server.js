@@ -4,7 +4,7 @@ const { connectToMongoDB } = require('./db'); // MongoDB connection function
 const path = require('path');
 const app = express();
 
-// Session setup
+// Session middleware
 app.use(session({
     secret: 'your_secret_key',
     resave: false,
@@ -19,41 +19,59 @@ app.use(express.urlencoded({ extended: true }));
 app.use(express.static(path.join(__dirname, 'public')));
 app.use('/images', express.static(path.join(__dirname, 'images')));
 
-// Middleware to check if user is logged in
+// Middleware to check if user is authenticated
 function isAuthenticated(req, res, next) {
     if (req.session.isLoggedIn) {
-        return next(); // User is authenticated, allow them to proceed
+        return next();
     } else {
-        return res.redirect('/login'); // If not logged in, redirect to login
+        return res.redirect('/login'); // Redirect to login if not authenticated
     }
 }
 
-// Publicly accessible routes
-app.use('/', require('./views/index'));
-app.use('/login', require('./views/login'));
-app.use('/register', require('./views/register'));
+// Import route files
+const indexRoute = require('./views/index');
+const loginRoute = require('./views/login');
+const verificationRoute = require('./views/verification');
+const registerRoute = require('./views/register');
+const dashboardRoute = require('./views/dashboard');
+const journalEntryRoute = require('./views/journalEntry');
+const goalsManagementRoute = require('./views/goalsManagement');
+const profileRoute = require('./views/profile');
+const admin_registerRoute = require('./views/admin_register');
+const admin_dashboardRoute = require('./views/admin_dashboard');
+const changeEmailRoute = require('./views/changeEmail');
+const changePasswordRoute = require('./views/changePassword');
+const forgetPasswordRoute = require('./views/forgetPassword');
+const logoutRoute = require('./views/logout');
+const logsRoute = require('./views/logs');
+const verifyEmailRoute = require('./views/verifyEmail');
 
-// Routes that require authentication
-app.use('/verification', isAuthenticated, require('./views/verification'));
-app.use('/dashboard', isAuthenticated, require('./views/dashboard'));
-app.use('/journalEntry', isAuthenticated, require('./views/journalEntry'));
-app.use('/goalsManagement', isAuthenticated, require('./views/goalsManagement'));
-app.use('/profile', isAuthenticated, require('./views/profile'));
-app.use('/admin_register', isAuthenticated, require('./views/admin_register'));
-app.use('/admin_dashboard', isAuthenticated, require('./views/admin_dashboard'));
-app.use('/changeEmail', isAuthenticated, require('./views/changeEmail'));
-app.use('/changePassword', isAuthenticated, require('./views/changePassword'));
-app.use('/forgetPassword', isAuthenticated, require('./views/forgetPassword'));
-app.use('/logout', isAuthenticated, require('./views/logout'));
-app.use('/logs', isAuthenticated, require('./views/logs'));
-app.use('/verify-email', isAuthenticated, require('./views/verifyEmail'));
+// Public routes (no authentication required)
+app.use('/', indexRoute);
+app.use('/login', loginRoute);
+app.use('/verification', verificationRoute);
+app.use('/register', registerRoute);
 
-// Handle 404 errors
+// Protected routes (authentication required)
+app.use('/dashboard', isAuthenticated, dashboardRoute);
+app.use('/journalEntry', isAuthenticated, journalEntryRoute);
+app.use('/goalsManagement', isAuthenticated, goalsManagementRoute);
+app.use('/profile', isAuthenticated, profileRoute);
+app.use('/admin_register', isAuthenticated, admin_registerRoute);
+app.use('/admin_dashboard', isAuthenticated, admin_dashboardRoute);
+app.use('/changeEmail', isAuthenticated, changeEmailRoute);
+app.use('/changePassword', isAuthenticated, changePasswordRoute);
+app.use('/forgetPassword', isAuthenticated, forgetPasswordRoute);
+app.use('/logout', isAuthenticated, logoutRoute);
+app.use('/logs', isAuthenticated, logsRoute);
+app.use('/verify-email', isAuthenticated, verifyEmailRoute);
+
+// 404 handler
 app.use((req, res) => {
     res.status(404).send('<h1>404 - Not Found</h1><p>The page you are looking for does not exist.</p>');
 });
 
-// Handle other errors
+// 500 handler
 app.use((err, req, res, next) => {
     console.error(err.stack);
     res.status(500).send('<h1>500 - Internal Server Error</h1><p>Something went wrong!</p>');
