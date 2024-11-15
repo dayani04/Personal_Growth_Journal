@@ -3,7 +3,6 @@ const session = require('express-session');
 const { connectToMongoDB } = require('./db'); // MongoDB connection function
 const path = require('path');
 const app = express();
-const isAuthenticated = require('./middleware/auth');
 
  
 app.use(session({
@@ -43,20 +42,20 @@ app.use('/images', express.static(path.join(__dirname, 'images')));
 // Use imported routes
 app.use('/', indexRoute);
 app.use('/login', loginRoute);
+app.use('/verification', verificationRoute);
 app.use('/register', registerRoute);
-
-// Protected Routes - Accessible only after login
-app.use('/dashboard', isAuthenticated, dashboardRoute);
-app.use('/journalEntry', isAuthenticated, journalEntryRoute);
-app.use('/goalsManagement', isAuthenticated, goalsManagementRoute);
-app.use('/profile', isAuthenticated, profileRoute);
-app.use('/admin_dashboard', isAuthenticated, admin_dashboardRoute);
-app.use('/changeEmail', isAuthenticated, changeEmailRoute);
-app.use('/changePassword', isAuthenticated, changePasswordRoute);
-app.use('/forgetPassword', isAuthenticated, forgetPasswordRoute);
-app.use('/logs', isAuthenticated, logsRoute);
-app.use('/logs', isAuthenticated, logsRoute);
-app.use('/verify-email', isAuthenticated, verifyEmailRoute);
+app.use('/dashboard', dashboardRoute);
+app.use('/journalEntry', journalEntryRoute);
+app.use('/goalsManagement', goalsManagementRoute);
+app.use('/profile', profileRoute);
+app.use('/admin_register', admin_registerRoute);
+app.use('/admin_dashboard', admin_dashboardRoute);
+app.use('/changeEmail', changeEmailRoute);
+app.use('/changePassword', changePasswordRoute);
+app.use('/forgetPassword', forgetPasswordRoute);
+app.use('/logout', logoutRoute);
+app.use('/logs', logsRoute);
+app.use('/verify-email', verifyEmailRoute);
 
 
 
