@@ -2,9 +2,10 @@ const express = require('express');
 const router = express.Router();
 const { getDb } = require('../db');
 const speakeasy = require('speakeasy');
+const isAuthenticated = require('../middleware/isAuthenticated');
 
 
-router.get('/', (req, res) => {
+router.get('/',isAuthenticated, (req, res) => {
     const htmlContent = `
     <!DOCTYPE html>
     <html lang="en">
@@ -52,7 +53,7 @@ router.get('/', (req, res) => {
 });
 
 
-router.post('/', async (req, res) => {
+router.post('/',isAuthenticated, async (req, res) => {
     const { email, password, token } = req.body;
 
     const db = getDb();

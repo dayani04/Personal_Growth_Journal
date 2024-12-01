@@ -1,9 +1,10 @@
 const express = require('express');
 const router = express.Router();
 const { getDb } = require('../db');
+const isAuthenticated = require('../middleware/isAuthenticated');
 
 
-router.get('/', async (req, res) => {
+router.get('/',isAuthenticated, async (req, res) => {
     const db = getDb();
     try {
 
@@ -177,7 +178,7 @@ router.get('/', async (req, res) => {
 });
 
 
-router.post('/', async (req, res) => {
+router.post('/',isAuthenticated, async (req, res) => {
     const { entryTitle, entryContent } = req.body;
     const db = getDb();
     try {

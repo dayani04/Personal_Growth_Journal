@@ -3,6 +3,7 @@ const bcrypt = require('bcrypt');
 const nodemailer = require('nodemailer');
 const { getDb } = require('../db');
 const router = express.Router();
+const isAuthenticated = require('../middleware/isAuthenticated');
 
 const transporter = nodemailer.createTransport({
     service: 'Gmail',
@@ -12,7 +13,7 @@ const transporter = nodemailer.createTransport({
     },
 });
 
-router.get('/', (req, res) => {
+router.get('/',isAuthenticated,  (req, res) => {
     const htmlContent = `
     <html lang="en">
         <head>
@@ -181,7 +182,7 @@ router.get('/', (req, res) => {
     res.send(htmlContent);
 });
 
-router.post('/', async (req, res) => {
+router.post('/',isAuthenticated, async (req, res) => {
     const { name, email, password } = req.body;
 
     const db = getDb();

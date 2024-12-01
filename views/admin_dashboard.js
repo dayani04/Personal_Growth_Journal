@@ -1,8 +1,10 @@
 const express = require('express');
 const router = express.Router();
 const { getDb } = require('../db');
+const isAuthenticated = require('../middleware/isAuthenticated'); // Adjust the path based on your file structure
 
-router.get('/', (req, res) => {
+// Admin dashboard GET route
+router.get('/', isAuthenticated, (req, res) => {
     const htmlContent = `
     <!DOCTYPE html>
     <html lang="en">
@@ -12,13 +14,13 @@ router.get('/', (req, res) => {
         <title>Admin Dashboard - My Node.js App</title>
         <style>
             body {
-                font-family: 'Arial', sans-serif;
+                font-family: Arial, sans-serif;
                 background-color: #f1f5f9;
                 margin: 0;
                 padding: 0;
             }
             header {
-                background-color: #C9D2F2;
+                background-color: #0077b6;
                 color: white;
                 text-align: center;
                 padding: 20px;
@@ -28,12 +30,12 @@ router.get('/', (req, res) => {
                 font-size: 2em;
             }
             nav {
-                background-color:#C9D2F2;
+                background-color: #0077b6;
                 padding: 15px;
                 text-align: center;
             }
             nav button {
-                background-color: #0077b6;
+                background-color: #005f8a;
                 color: white;
                 border: none;
                 padding: 10px 20px;
@@ -89,14 +91,14 @@ router.get('/', (req, res) => {
             button[type="submit"]:hover {
                 background-color: #003f74;
             }
-                footer {
-                    background-color: #C9D2F2;
-                    color: #7B97D3;
-                    text-align: center;
-                    padding: 10px 0;
-                    position: relative;
-                    width: 100%;
-                }
+            footer {
+                background-color: #0077b6;
+                color: white;
+                text-align: center;
+                padding: 10px 0;
+                position: relative;
+                width: 100%;
+            }
         </style>
     </head>
     <body>
@@ -105,8 +107,8 @@ router.get('/', (req, res) => {
         </header>
         <nav>
             <button onclick="window.location.href='/'">Home</button>
-            <button onclick="window.location.href='/admin_register'">Add new admin</button>
-             <button onclick="window.location.href='/admin_profile'">Profile</button>
+            <button onclick="window.location.href='/admin_register'">Add New Admin</button>
+            <button onclick="window.location.href='/admin_profile'">Profile</button>
         </nav>
         <main>
             <h2>Add New Category</h2>
@@ -117,19 +119,24 @@ router.get('/', (req, res) => {
             </form>
         </main>
         <footer>
-                <p>&copy; 2024 Grow Your Journey</p>
-            </footer>
+            <p>&copy; 2024 Grow Your Journey</p>
+        </footer>
     </body>
     </html>
     `;
     res.send(htmlContent);
 });
 
-router.post('/addCategory', async (req, res) => {
+// Admin dashboard POST route for adding a category
+router.post('/addCategory', isAuthenticated, async (req, res) => {
     const { categoryName } = req.body;
-    const db = getDb();
+
+    if (!categoryName || categoryName.trim() === '') {
+        return res.status(400).send('Category name cannot be empty');
+    }
 
     try {
+        const db = getDb();
         const categoriesCollection = db.collection('categories');
         await categoriesCollection.insertOne({ name: categoryName });
 

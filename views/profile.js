@@ -1,10 +1,10 @@
 const express = require('express');
 const router = express.Router();
 const { getDb } = require('../db');
+const isAuthenticated = require('../middleware/isAuthenticated'); // Adjust the path based on your file structure
 
-
-router.get('/', (req, res) => {
-    const htmlContent = `
+router.get('/', isAuthenticated, (req, res) => {
+    const htmlContent =`
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -191,25 +191,23 @@ router.get('/', (req, res) => {
 });
 
 
-router.post('/update', async (req, res) => {
+
+router.post('/update', isAuthenticated, async (req, res) => {
     const { oldEmail, name, age, gender, dob } = req.body;
 
     const db = getDb();
 
     try {
-
         const updateData = {};
         if (name) updateData.name = name;
         if (age) updateData.age = parseInt(age, 10);
         if (gender) updateData.gender = gender;
         if (dob) updateData.dob = new Date(dob);
 
-
         const result = await db.collection('users').updateOne(
             { email: oldEmail },
             { $set: updateData }
         );
-
 
         if (result.modifiedCount === 0) {
             return res.status(404).send('User not found or no changes made.');

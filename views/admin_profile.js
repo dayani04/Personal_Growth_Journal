@@ -1,9 +1,10 @@
 const express = require('express');
 const router = express.Router();
 const { getDb } = require('../db');
+const isAuthenticated = require('../middleware/isAuthenticated'); // Adjust the path based on your file structure
 
-// Serve the update admin form (GET request)
-router.get('/', (req, res) => {
+// Admin dashboard GET route
+router.get('/', isAuthenticated, (req, res) => {
     const htmlContent = `
 <!DOCTYPE html>
 <html lang="en">
