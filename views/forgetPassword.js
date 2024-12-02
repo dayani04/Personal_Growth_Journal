@@ -169,7 +169,7 @@ router.get('/', (req, res) => {
             </script>
             ` : ''}
         </div>
-        <footer>&copy; 2024 GreenCity. All rights reserved.</footer>
+        <footer> 2024 GreenCity. All rights reserved.</footer>
     </body>
     </html>
     `);
