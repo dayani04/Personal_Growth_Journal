@@ -2,8 +2,8 @@ const express = require('express');
 const bcrypt = require('bcrypt');
 const nodemailer = require('nodemailer');
 const { getDb } = require('../db');
+const validator = require('validator');  // Import the validator package for input sanitization
 const router = express.Router();
-const isAuthenticated = require('../middleware/isAuthenticated');
 
 const transporter = nodemailer.createTransport({
     service: 'Gmail',
@@ -13,14 +13,15 @@ const transporter = nodemailer.createTransport({
     },
 });
 
-router.get('/',isAuthenticated,  (req, res) => {
+// Render the HTML form
+router.get('/', (req, res) => {
     const htmlContent = `
     <html lang="en">
         <head>
             <meta charset="UTF-8">
             <meta name="viewport" content="width=device-width, initial-scale=1.0">
             <title>Admin Register - My Node.js App</title>
-            <style>
+           <style>
                 body {
                     font-family: 'Arial', sans-serif;
                     background-color: #f9fafb;
@@ -182,36 +183,48 @@ router.get('/',isAuthenticated,  (req, res) => {
     res.send(htmlContent);
 });
 
-router.post('/',isAuthenticated, async (req, res) => {
+// Handle form submission for registration
+router.post('/', async (req, res) => {
     const { name, email, password } = req.body;
+
+    // Sanitize inputs to prevent XSS and SQL Injection-like attacks
+    const sanitizedName = validator.escape(validator.trim(name));
+    const sanitizedEmail = validator.normalizeEmail(email);  // Normalize email
+    const sanitizedPassword = validator.escape(password);  // Escape password input
 
     const db = getDb();
 
     try {
-        const existingAdmin = await db.collection('admins').findOne({ email });
+        const existingAdmin = await db.collection('admins').findOne({ email: sanitizedEmail });
         if (existingAdmin) {
             return res.send('<script>document.getElementById("email-warning").style.display = "block";</script>');
         }
+
+        // Validate password strength before proceeding
+        if (!validator.isStrongPassword(sanitizedPassword, { minLength: 8 })) {
+            return res.send('<script>document.getElementById("password-warning").style.display = "block";</script>');
+        }
+
         const saltRounds = 10;
         const salt = await bcrypt.genSalt(saltRounds);
-        const hashedPassword = await bcrypt.hash(password, salt);
+        const hashedPassword = await bcrypt.hash(sanitizedPassword, salt);
 
         const result = await db.collection('admins').insertOne({
-            name: name,
-            email: email,
+            name: sanitizedName,
+            email: sanitizedEmail,
             password: hashedPassword,
             salt: salt,
         });
-        
+
+        // Send welcome email after successful registration
         const mailOptions = {
             from: 'dayanisandamali977@gmail.com',
-            to: email,
+            to: sanitizedEmail,
             subject: 'Welcome to the Admin Panel',
             html: `
                 <h1>Welcome to your Admin Journey!</h1>
-                <p>Dear ${name},</p>
+                <p>Dear ${sanitizedName},</p>
                 <p>Congratulations on becoming an admin. You're now part of an amazing team that will help drive our mission forward!</p>
-                <p>Your journey is just beginning, and we're excited to have you on board. Let’s build something incredible together!</p>
                 <p>Best Regards,<br/> The Team</p>
             `,
         };

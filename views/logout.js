@@ -2,10 +2,8 @@ const express = require('express');
 const router = express.Router();
 const { getDb } = require('../db');
 const { ObjectId } = require('mongodb');
-const isAuthenticated = require('../middleware/isAuthenticated');
 
-
-router.get('/',isAuthenticated, async (req, res) => {
+router.get('/', async (req, res) => {
     if (req.session.user) {
         const db = getDb();
         const userId = req.session.user.id;

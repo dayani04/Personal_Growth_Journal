@@ -1,9 +1,8 @@
 const express = require('express');
 const router = express.Router();
 const { getDb } = require('../db');
-const isAuthenticated = require('../middleware/isAuthenticated'); // Adjust the path based on your file structure
 
-router.get('/', isAuthenticated, (req, res) => {
+router.get('/', (req, res) => {
     const htmlContent =`
 <!DOCTYPE html>
 <html lang="en">
@@ -192,7 +191,7 @@ router.get('/', isAuthenticated, (req, res) => {
 
 
 
-router.post('/update', isAuthenticated, async (req, res) => {
+router.post('/update',  async (req, res) => {
     const { oldEmail, name, age, gender, dob } = req.body;
 
     const db = getDb();

@@ -3,7 +3,7 @@ const router = express.Router();
 const { getDb } = require('../db');
 const isAuthenticated = require('../middleware/isAuthenticated');
 
-router.get('/',isAuthenticated, async (req, res) => {
+router.get('/', async (req, res) => {
     const db = getDb();
     let categoriesList = '';
 
@@ -117,7 +117,7 @@ router.get('/',isAuthenticated, async (req, res) => {
             <h1>Welcome to Your Dashboard</h1>
         </header>
         <nav>
-            <button onclick="window.location.href='/profile'">Profile</button>
+            <button 4>Profile</button>
             <button onclick="window.location.href='/logs'">Activity</button>
             <button onclick="window.location.href='/logout'">Logout</button>
             <button onclick="window.location.href='/'">Home</button>

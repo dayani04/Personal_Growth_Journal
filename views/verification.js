@@ -2,10 +2,9 @@ const express = require('express');
 const router = express.Router();
 const { getDb } = require('../db');
 const speakeasy = require('speakeasy');
-const isAuthenticated = require('../middleware/isAuthenticated');
+const bcrypt = require('bcrypt');
 
-
-router.get('/',isAuthenticated, (req, res) => {
+router.get('/', (req, res) => {
     const htmlContent = `
     <!DOCTYPE html>
     <html lang="en">
@@ -24,7 +23,7 @@ router.get('/',isAuthenticated, (req, res) => {
             <div class="verification-container">
                 <div class="verification-card">
                     <h2>Enter 2FA Token</h2>
-                    <form action="/verification" method="POST" class="verification-form">
+                    <form action="/verification" method="POST">
                         <div class="form-group">
                             <label for="email">Email:</label>
                             <input type="email" id="email" name="email" required>
@@ -52,36 +51,42 @@ router.get('/',isAuthenticated, (req, res) => {
     res.send(htmlContent);
 });
 
-
-router.post('/',isAuthenticated, async (req, res) => {
+router.post('/', async (req, res) => {
     const { email, password, token } = req.body;
-
     const db = getDb();
 
     try {
-        const user = await db.collection('users').findOne({ email: email });
+        const user = await db.collection('users').findOne({ email });
 
-        if (!user || user.password !== password) {
-            return res.send('Invalid email or password.');
+        if (!user) {
+            return res.status(400).send('Invalid email.');
+        }
+
+        const isPasswordCorrect = await bcrypt.compare(password, user.password);
+        if (!isPasswordCorrect) {
+            return res.status(400).send('Invalid password.');
         }
 
         const verified = speakeasy.totp.verify({
-            secret: user.twofa_secret,
+            secret: user.totpSecret,
             encoding: 'base32',
-            token: token,
-            window: 1
+            token,
+            window: 1,
         });
 
         if (verified) {
+            await db.collection('users').updateOne(
+                { email },
+                { $set: { verified: true } }
+            );
 
             res.redirect('/dashboard');
         } else {
-
-            res.send('Invalid 2FA token.');
+            res.status(400).send('Invalid 2FA token.');
         }
     } catch (err) {
-        console.error('Error querying the database:', err);
-        res.send('Error querying the database.');
+        console.error('Error during verification:', err);
+        res.status(500).send('An error occurred. Please try again later.');
     }
 });
 

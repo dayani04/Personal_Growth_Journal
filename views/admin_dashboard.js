@@ -1,10 +1,10 @@
 const express = require('express');
 const router = express.Router();
 const { getDb } = require('../db');
-const isAuthenticated = require('../middleware/isAuthenticated'); // Adjust the path based on your file structure
+
 
 // Admin dashboard GET route
-router.get('/', isAuthenticated, (req, res) => {
+router.get('/', (req, res) => {
     const htmlContent = `
     <!DOCTYPE html>
     <html lang="en">
@@ -128,7 +128,7 @@ router.get('/', isAuthenticated, (req, res) => {
 });
 
 // Admin dashboard POST route for adding a category
-router.post('/addCategory', isAuthenticated, async (req, res) => {
+router.post('/', async (req, res) => {
     const { categoryName } = req.body;
 
     if (!categoryName || categoryName.trim() === '') {
