@@ -48,22 +48,22 @@ app.use('/', indexRoute);
 app.use('/login', loginRoute);
 app.use('/verification', verificationRoute);
 app.use('/register', registerRoute);
-app.use('/verification', checkAuth,isUser,verificationRoute);
-app.use('/dashboard', checkAuth,isUser, dashboardRoute); // Protect with authentication
-app.use('/journalEntry', checkAuth,isUser, journalEntryRoute); // Protect with authentication
-app.use('/goalsManagement', checkAuth,isUser, goalsManagementRoute); // Protect with authentication
-app.use('/profile', checkAuth,isUser, profileRoute); // Protect with authentication
-app.use('/admin_register',checkAuth,isAdmin, adminRegisterRoute); // Protect with authentication
-app.use('/changeEmail', checkAuth,isUser, changeEmailRoute); // Protect with authentication
-app.use('/changePassword', checkAuth,isUser, changePasswordRoute); // Protect with authentication
-app.use('/forgetPassword', checkAuth,isUser,forgetPasswordRoute); // Public route
-app.use('/logout', checkAuth,isUser, logoutRoute); // Protect with authentication
-app.use('/logs', checkAuth,isUser, logsRoute); // Protect with authentication
+app.use('/verification', verificationRoute);
+app.use('/dashboard', dashboardRoute); // Protect with authentication
+app.use('/journalEntry',  journalEntryRoute); // Protect with authentication
+app.use('/goalsManagement',  goalsManagementRoute); // Protect with authentication
+app.use('/profile',  profileRoute); // Protect with authentication
+app.use('/admin_register', adminRegisterRoute); // Protect with authentication
+app.use('/changeEmail',  changeEmailRoute); // Protect with authentication
+app.use('/changePassword',  changePasswordRoute); // Protect with authentication
+app.use('/forgetPassword', forgetPasswordRoute); // Public route
+app.use('/logout',  logoutRoute); // Protect with authentication
+app.use('/logs',  logsRoute); // Protect with authentication
 app.use('/verify-email', verifyEmailRoute);
-app.use('/admin_dashboard',checkAuth,isAdmin, adminDashboardRoute); // Protect with authentication
-app.use('/admin_profile', checkAuth,isAdmin, adminProfileRoute); // Protect with authentication
-app.use('/admin_changePassword', checkAuth,isAdmin, adminChangePasswordRoute); // Protect with authentication
-app.use('/admin_changeEmail', checkAuth,isAdmin, adminChangeEmailRoute); // Protect with authentication
+app.use('/admin_dashboard',adminDashboardRoute); // Protect with authentication
+app.use('/admin_profile',  adminProfileRoute); // Protect with authentication
+app.use('/admin_changePassword',  adminChangePasswordRoute); // Protect with authentication
+app.use('/admin_changeEmail',  adminChangeEmailRoute); // Protect with authentication
 
 // 404 error handler
 app.use((req, res) => {

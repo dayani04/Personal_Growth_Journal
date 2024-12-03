@@ -1,9 +1,6 @@
 const express = require('express');
 const bcrypt = require('bcrypt');
 const { getDb } = require('../db');
-const { v4: uuidv4 } = require('uuid');
-const jwt = require('jsonwebtoken');
-const useragent = require('useragent');  // If needed for user agent tracking
 const router = express.Router();
 
 // Login GET route
@@ -108,7 +105,7 @@ router.post('/', async (req, res) => {
     const currentTime = Date.now();
 
     if (req.session.lockedOutUntil && currentTime < req.session.lockedOutUntil) {
-        req.session.errorMessage = `Too many failed login attempts. Please try again later.`;
+        req.session.errorMessage = 'Too many failed login attempts. Please try again later.';
         return res.redirect('/login');
     }
 
@@ -131,7 +128,7 @@ router.post('/', async (req, res) => {
 
             if (req.session.attempts >= 3) {
                 req.session.lockedOutUntil = currentTime + 30 * 1000;
-                req.session.errorMessage = `Too many failed login attempts. Please wait for 30 seconds.`;
+                req.session.errorMessage = 'Too many failed login attempts. Please wait for 30 seconds.';
             } else {
                 req.session.errorMessage = `Invalid email or password. You have ${3 - req.session.attempts} attempts remaining.`;
             }
@@ -142,16 +139,6 @@ router.post('/', async (req, res) => {
         // Reset attempts and locked out status
         req.session.attempts = 0;
         req.session.lockedOutUntil = null;
-
-        // JWT authToken generation
-        const authToken = jwt.sign(
-            { userId: user._id, isAdmin: userType === 'admin' },
-            process.env.JWT_SECRET,  // Ensure this is stored in your environment variables
-            { expiresIn: '1h' }
-        );
-
-        // Store the authToken in the session
-        req.session.authToken = authToken;
 
         // Store session details
         req.session.user = {
